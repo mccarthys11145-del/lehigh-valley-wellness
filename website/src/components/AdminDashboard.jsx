@@ -16,11 +16,12 @@ import {
   MessageSquare,
   TrendingUp,
   Search,
-  Filter,
   Eye,
   Check,
   X
 } from 'lucide-react';
+
+const API_BASE_URL = import.meta.env.VITE_CRM_API_URL || 'http://localhost:5001/api';
 
 const AdminDashboard = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -38,27 +39,27 @@ const AdminDashboard = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (currentStatus = statusFilter) => {
     try {
       setLoading(true);
-      
+
       // Fetch dashboard stats
-      const statsResponse = await fetch('/api/dashboard/stats');
+      const statsResponse = await fetch(`${API_BASE_URL}/dashboard/stats`);
       const statsData = await statsResponse.json();
       if (statsData.success) {
         setStats(statsData.stats);
       }
-      
+
       // Fetch consultation requests
-      const requestsResponse = await fetch(`/api/consultation-requests?status=${statusFilter}`);
+      const requestsResponse = await fetch(`${API_BASE_URL}/consultation-requests?status=${currentStatus}`);
       const requestsData = await requestsResponse.json();
       if (requestsData.success) {
         setConsultationRequests(requestsData.consultation_requests);
       }
-      
+
       // Fetch today's appointments
       const today = new Date().toISOString().split('T')[0];
-      const appointmentsResponse = await fetch(`/api/appointments?start_date=${today}&end_date=${today}`);
+      const appointmentsResponse = await fetch(`${API_BASE_URL}/appointments?start_date=${today}&end_date=${today}`);
       const appointmentsData = await appointmentsResponse.json();
       if (appointmentsData.success) {
         setAppointments(appointmentsData.appointments);
@@ -73,7 +74,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
 
   const handleConfirmRequest = async (requestId) => {
     try {
-      const response = await fetch(`/api/consultation-requests/${requestId}/confirm`, {
+      const response = await fetch(`${API_BASE_URL}/consultation-requests/${requestId}/confirm`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -302,8 +303,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
                     <select
                       value={statusFilter}
                       onChange={(e) => {
-                        setStatusFilter(e.target.value);
-                        fetchDashboardData();
+                        const newStatus = e.target.value;
+                        setStatusFilter(newStatus);
+                        fetchDashboardData(newStatus);
                       }}
                       className="px-3 py-2 border border-gray-300 rounded-md"
                     >
