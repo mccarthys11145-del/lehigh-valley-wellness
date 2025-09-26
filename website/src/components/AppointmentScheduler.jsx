@@ -189,7 +189,6 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
     setIsSubmitting(true);
     
     try {
-      // Prepare data for CRM API
       const requestData = {
         firstName: patientInfo.firstName,
         lastName: patientInfo.lastName,
@@ -205,14 +204,14 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         priority: 'normal'
       };
 
-/ Submit to CRM API
-const response = await fetch(buildUrl('/consultation-requests'), {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(requestData)
-});
+// Submit to the CRM API
+      const response = await fetch(buildCrmApiUrl('/consultation-requests'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+      });
 
       if (!response.ok) {
         const errorText = await response.text();
