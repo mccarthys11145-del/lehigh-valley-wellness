@@ -205,15 +205,14 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         priority: 'normal'
       };
 
-      // Submit to CRM API
-      const response = await fetch(buildCrmApiUrl('/consultation-requests'), {
-      const response = await fetch(`${API_BASE_URL}/consultation-requests`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
-      });
+/ Submit to CRM API
+const response = await fetch(buildUrl('/consultation-requests'), {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(requestData)
+});
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -221,13 +220,14 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       }
 
       const result = await response.json();
-      
-      if (result.success) {
+
+      if (result?.success) {
         setIsSubmitting(false);
         setIsSubmitted(true);
-      } else {
-        throw new Error(result.error || 'Failed to submit consultation request');
+        return;
       }
+
+      throw new Error(result?.error || 'Failed to submit consultation request');
     } catch (error) {
       console.error('Error submitting consultation request:', error);
       setIsSubmitting(false);
