@@ -1,5 +1,6 @@
 const RELATIVE_DEFAULT = '/api';
 const LOCAL_DEFAULT = 'http://localhost:5001/api';
+const PROD_DEFAULT = 'https://zmhqivc5kk7d.manus.space/api';
 
 const isBrowser = typeof window !== 'undefined';
 const hasDocument = typeof document !== 'undefined';
@@ -132,6 +133,7 @@ export function getCrmApiBaseUrls() {
     fallbacks.push(LOCAL_DEFAULT);
   }
 
+  fallbacks.push(PROD_DEFAULT);
   fallbacks.push(RELATIVE_DEFAULT);
 
   const seen = new Set();
