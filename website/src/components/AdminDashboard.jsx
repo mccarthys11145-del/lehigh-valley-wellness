@@ -22,6 +22,8 @@ import {
   X
 } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_CRM_API_URL || 'http://localhost:5001/api';
+
 const AdminDashboard = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState({});
@@ -38,19 +40,18 @@ const AdminDashboard = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const fetchDashboardData = async (currentStatus = statusFilter) => {
+   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
-
       // Fetch dashboard stats
-      const statsResponse = await fetch(buildCrmApiUrl('/dashboard/stats'));
+      const statsResponse = await fetch(buildUrl('/dashboard/stats'));
       const statsData = await statsResponse.json();
       if (statsData.success) {
         setStats(statsData.stats);
       }
 
-      // Fetch consultation requests
-      const requestsResponse = await fetch(buildCrmApiUrl(`/consultation-requests?status=${currentStatus}`));
+     // Fetch consultation requests
+      const requestsResponse = await fetch(buildUrl('/consultation-requests/status/[currentStatus]'));
       const requestsData = await requestsResponse.json();
       if (requestsData.success) {
         setConsultationRequests(requestsData.consultation_requests);
@@ -58,7 +59,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
 
       // Fetch today's appointments
       const today = new Date().toISOString().split('T')[0];
-      const appointmentsResponse = await fetch(buildCrmApiUrl(`/appointments?start_date=${today}&end_date=${today}`));
+      const appointmentsResponse = await fetch(buildUrl('/appointments/start_date=[today]&end_date=[today]'));
       const appointmentsData = await appointmentsResponse.json();
       if (appointmentsData.success) {
         setAppointments(appointmentsData.appointments);
@@ -71,9 +72,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleConfirmRequest = async (requestId) => {
+   const handleConfirmRequest = async (requestId) => {
     try {
-      const response = await fetch(buildCrmApiUrl(`/consultation-requests/${requestId}/confirm`), {
+      const response = await fetch(buildUrl('/consultation-requests/${requestId}/confirm'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -23,6 +23,8 @@ import {
   Shield
 } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_CRM_API_URL || 'http://localhost:5001/api';
+
 const AppointmentScheduler = ({ isOpen, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedService, setSelectedService] = useState(null);
@@ -203,13 +205,14 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         priority: 'normal'
       };
 
-      const response = await fetch(buildCrmApiUrl('/consultation-requests'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
-      });
+/ Submit to CRM API
+const response = await fetch(buildUrl('/consultation-requests'), {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(requestData)
+});
 
       if (!response.ok) {
         const errorText = await response.text();
