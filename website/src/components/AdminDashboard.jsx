@@ -22,6 +22,8 @@ import {
   X
 } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_CRM_API_URL || 'http://localhost:5001/api';
+
 const AdminDashboard = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState({});
@@ -41,7 +43,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
   const fetchDashboardData = async (currentStatus = statusFilter) => {
     try {
       setLoading(true);
-
+   
       // Fetch dashboard stats
       const statsResponse = await fetch(buildCrmApiUrl('/dashboard/stats'));
       const statsData = await statsResponse.json();
