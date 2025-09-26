@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button.jsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Input } from '@/components/ui/input.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
+import { buildCrmApiUrl, getCrmApiBaseUrlCandidates } from '@/lib/api.js';
 import { 
   Calendar, 
   Clock, 
@@ -109,11 +110,13 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       for (let minute = 0; minute < 60; minute += interval) {
         const time = new Date();
         time.setHours(hour, minute, 0, 0);
-        slots.push(time.toLocaleTimeString('en-US', { 
-          hour: 'numeric', 
+        const value = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+        const label = time.toLocaleTimeString('en-US', {
+          hour: 'numeric',
           minute: '2-digit',
-          hour12: true 
-        }));
+          hour12: true
+        });
+        slots.push({ value, label });
       }
     }
     return slots;
@@ -195,28 +198,61 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         preferredContact: patientInfo.preferredContact,
         serviceType: selectedService.id,
         preferredDate: selectedDate.toISOString().split('T')[0],
-        preferredTime: selectedTime,
+        preferredTime: selectedTime?.value,
         reason: patientInfo.reason,
         priority: 'normal'
       };
-      
-      // Submit to CRM API
-      const response = await fetch('/api/consultation-requests', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        setIsSubmitting(false);
-        setIsSubmitted(true);
-      } else {
-        throw new Error(result.error || 'Failed to submit consultation request');
+
+      const attemptedEndpoints = new Set();
+      const candidateEndpoints = [
+        ...getCrmApiBaseUrlCandidates().map((base) => `${base}/consultation-requests`),
+        buildCrmApiUrl('/consultation-requests'),
+        '/api/consultation-requests'
+      ].filter(Boolean);
+
+      let lastError;
+
+      for (const endpoint of candidateEndpoints) {
+        if (attemptedEndpoints.has(endpoint)) {
+          continue;
+        }
+
+        attemptedEndpoints.add(endpoint);
+
+        try {
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            lastError = new Error(`Request failed: ${response.status} ${errorText}`);
+            continue;
+          }
+
+          const result = await response.json();
+
+          if (result?.success) {
+            setIsSubmitting(false);
+            setIsSubmitted(true);
+            return;
+          }
+
+          lastError = new Error(result?.error || 'Failed to submit consultation request');
+        } catch (fetchError) {
+          lastError = fetchError;
+        }
       }
+
+      if (lastError) {
+        throw lastError;
+      }
+
+      throw new Error('Unable to submit consultation request. No CRM endpoints responded successfully.');
     } catch (error) {
       console.error('Error submitting consultation request:', error);
       setIsSubmitting(false);
@@ -315,7 +351,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Time:</span>
-                    <span>{selectedTime}</span>
+                    <span>{selectedTime?.label}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Duration:</span>
@@ -460,13 +496,13 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
                   <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                     {generateTimeSlots().map((time) => (
                       <Button
-                        key={time}
-                        variant={selectedTime === time ? "default" : "outline"}
+                        key={time.value}
+                        variant={selectedTime?.value === time.value ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleTimeSelect(time)}
                         className="text-sm"
                       >
-                        {time}
+                        {time.label}
                       </Button>
                     ))}
                   </div>
@@ -500,7 +536,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
                     <div className="flex justify-between">
                       <span className="font-medium">Date & Time:</span>
                       <span>
-                        {selectedDate?.toLocaleDateString()} at {selectedTime}
+                        {selectedDate?.toLocaleDateString()} at {selectedTime?.label}
                       </span>
                     </div>
                     <div className="flex justify-between">
