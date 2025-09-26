@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
 import { buildCrmApiUrl, getCrmApiBaseUrlCandidates } from '@/lib/api.js';
+import { buildCrmApiUrl } from '@/lib/api.js';
 import { 
   Calendar, 
   Clock, 
@@ -22,6 +23,8 @@ import {
   Activity,
   Shield
 } from 'lucide-react';
+
+const API_BASE_URL = import.meta.env.VITE_CRM_API_URL || 'http://localhost:5001/api';
 
 const AppointmentScheduler = ({ isOpen, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -203,6 +206,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         priority: 'normal'
       };
 
+
       const attemptedEndpoints = new Set();
       const candidateEndpoints = [
         ...getCrmApiBaseUrlCandidates().map((base) => `${base}/consultation-requests`),
@@ -250,6 +254,30 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
 
       if (lastError) {
         throw lastError;
+=======
+      // Submit to CRM API
+      const response = await fetch(buildCrmApiUrl('/consultation-requests'), {
+      const response = await fetch(`${API_BASE_URL}/consultation-requests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} ${errorText}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+      } else {
+        throw new Error(result.error || 'Failed to submit consultation request');
+
       }
 
       throw new Error('Unable to submit consultation request. No CRM endpoints responded successfully.');
