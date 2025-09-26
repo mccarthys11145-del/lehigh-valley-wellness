@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button.jsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
 import { Input } from '@/components/ui/input.jsx';
+import { buildCrmApiUrl } from '@/lib/api.js';
 import { 
   Calendar, 
   Clock, 
@@ -44,6 +45,8 @@ const AdminDashboard = ({ isOpen, onClose }) => {
       setLoading(true);
 
       // Fetch dashboard stats
+      const statsResponse = await fetch(buildCrmApiUrl('/dashboard/stats'));
+
       const statsResponse = await fetch(`${API_BASE_URL}/dashboard/stats`);
       const statsData = await statsResponse.json();
       if (statsData.success) {
@@ -51,6 +54,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
       }
 
       // Fetch consultation requests
+      const requestsResponse = await fetch(buildCrmApiUrl(`/consultation-requests?status=${currentStatus}`));
       const requestsResponse = await fetch(`${API_BASE_URL}/consultation-requests?status=${currentStatus}`);
       const requestsData = await requestsResponse.json();
       if (requestsData.success) {
@@ -59,6 +63,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
 
       // Fetch today's appointments
       const today = new Date().toISOString().split('T')[0];
+      const appointmentsResponse = await fetch(buildCrmApiUrl(`/appointments?start_date=${today}&end_date=${today}`));
       const appointmentsResponse = await fetch(`${API_BASE_URL}/appointments?start_date=${today}&end_date=${today}`);
       const appointmentsData = await appointmentsResponse.json();
       if (appointmentsData.success) {
@@ -74,6 +79,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
 
   const handleConfirmRequest = async (requestId) => {
     try {
+      const response = await fetch(buildCrmApiUrl(`/consultation-requests/${requestId}/confirm`), {
       const response = await fetch(`${API_BASE_URL}/consultation-requests/${requestId}/confirm`, {
         method: 'PUT',
         headers: {

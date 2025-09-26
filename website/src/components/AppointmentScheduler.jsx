@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
+import { buildCrmApiUrl } from '@/lib/api.js';
 import { 
   Calendar, 
   Clock, 
@@ -205,6 +206,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       };
 
       // Submit to CRM API
+      const response = await fetch(buildCrmApiUrl('/consultation-requests'), {
       const response = await fetch(`${API_BASE_URL}/consultation-requests`, {
         method: 'POST',
         headers: {
