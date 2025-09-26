@@ -90,12 +90,22 @@ export function getCrmApiBaseUrl() {
 
 export function buildCrmApiUrl(path = '') {
   const baseUrl = getCrmApiBaseUrl();
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const normalizedPath = path ? (path.startsWith('/') ? path : `/${path}`) : '';
 
   if (!baseUrl) {
-    return normalizedPath;
+    return normalizedPath || '';
   }
 
   const trimmedBase = baseUrl.replace(/\/+$/, '');
+
+  if (!normalizedPath) {
+    return trimmedBase;
+  }
+
+  const normalizedPathLower = normalizedPath.toLowerCase();
+  if (trimmedBase.toLowerCase().endsWith(normalizedPathLower)) {
+    return trimmedBase;
+  }
+
   return `${trimmedBase}${normalizedPath}`;
 }
