@@ -46,7 +46,6 @@ const AdminDashboard = ({ isOpen, onClose }) => {
 
       // Fetch dashboard stats
       const statsResponse = await fetch(buildCrmApiUrl('/dashboard/stats'));
-
       const statsResponse = await fetch(`${API_BASE_URL}/dashboard/stats`);
       const statsData = await statsResponse.json();
       if (statsData.success) {

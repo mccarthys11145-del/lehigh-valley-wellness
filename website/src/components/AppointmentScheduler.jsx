@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
+import { buildCrmApiUrl, getCrmApiBaseUrlCandidates } from '@/lib/api.js';
 import { buildCrmApiUrl } from '@/lib/api.js';
 import { 
   Calendar, 
@@ -205,6 +206,55 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         priority: 'normal'
       };
 
+
+      const attemptedEndpoints = new Set();
+      const candidateEndpoints = [
+        ...getCrmApiBaseUrlCandidates().map((base) => `${base}/consultation-requests`),
+        buildCrmApiUrl('/consultation-requests'),
+        '/api/consultation-requests'
+      ].filter(Boolean);
+
+      let lastError;
+
+      for (const endpoint of candidateEndpoints) {
+        if (attemptedEndpoints.has(endpoint)) {
+          continue;
+        }
+
+        attemptedEndpoints.add(endpoint);
+
+        try {
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            lastError = new Error(`Request failed: ${response.status} ${errorText}`);
+            continue;
+          }
+
+          const result = await response.json();
+
+          if (result?.success) {
+            setIsSubmitting(false);
+            setIsSubmitted(true);
+            return;
+          }
+
+          lastError = new Error(result?.error || 'Failed to submit consultation request');
+        } catch (fetchError) {
+          lastError = fetchError;
+        }
+      }
+
+      if (lastError) {
+        throw lastError;
+=======
       // Submit to CRM API
       const response = await fetch(buildCrmApiUrl('/consultation-requests'), {
       const response = await fetch(`${API_BASE_URL}/consultation-requests`, {
@@ -227,7 +277,10 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         setIsSubmitted(true);
       } else {
         throw new Error(result.error || 'Failed to submit consultation request');
+
       }
+
+      throw new Error('Unable to submit consultation request. No CRM endpoints responded successfully.');
     } catch (error) {
       console.error('Error submitting consultation request:', error);
       setIsSubmitting(false);
