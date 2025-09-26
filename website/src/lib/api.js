@@ -1,5 +1,6 @@
 const RELATIVE_DEFAULT = '/api';
 const LOCAL_DEFAULT = 'http://localhost:5001/api';
+const PROD_DEFAULT = 'https://zmhqivc5kk7d.manus.space/api';
 
 const isBrowser = typeof window !== 'undefined';
 const hasDocument = typeof document !== 'undefined';
@@ -132,6 +133,7 @@ export function getCrmApiBaseUrls() {
     fallbacks.push(LOCAL_DEFAULT);
   }
 
+  fallbacks.push(PROD_DEFAULT);
   fallbacks.push(RELATIVE_DEFAULT);
 
   const seen = new Set();
@@ -183,6 +185,17 @@ function joinBaseAndPath(base, path) {
     return trimmedBase;
   }
 
+  const lowerBase = trimmedBase.toLowerCase();
+  const lowerPath = path.toLowerCase();
+
+  if (lowerBase.endsWith(lowerPath)) {
+    return trimmedBase;
+  }
+
+  if (lowerBase.endsWith('/patients') && lowerPath.startsWith('/patients')) {
+    return `${trimmedBase}${path.slice('/patients'.length)}`;
+  }
+
   return `${trimmedBase}${path}`;
 }
 
@@ -208,6 +221,25 @@ export function buildCrmApiUrl(path = '', base = undefined) {
   return fullUrl;
 }
 
+function expandBaseVariants(base) {
+  if (!base) {
+    return [];
+  }
+
+  const trimmed = base.replace(/\/+$/, '');
+  const variants = [trimmed];
+
+  if (/\/patients$/i.test(trimmed)) {
+    variants.push(trimmed.replace(/\/patients$/i, ''));
+  }
+
+  if (/\/consultation-requests$/i.test(trimmed)) {
+    variants.push(trimmed.replace(/\/consultation-requests$/i, ''));
+  }
+
+  return Array.from(new Set(variants.filter(Boolean)));
+}
+
 export function buildCrmApiUrlCandidates(path = '') {
   const variants = generatePathVariants(path);
   const bases = getCrmApiBaseUrls();
@@ -228,19 +260,21 @@ export function buildCrmApiUrlCandidates(path = '') {
     const normalizedBase = normalizeBaseUrl(base);
     if (!normalizedBase) continue;
 
-    for (const variant of variants) {
-      if (isAbsoluteUrl(variant)) {
-        if (!seen.has(variant)) {
-          seen.add(variant);
-          candidates.push(variant);
+    for (const baseVariant of expandBaseVariants(normalizedBase)) {
+      for (const variant of variants) {
+        if (isAbsoluteUrl(variant)) {
+          if (!seen.has(variant)) {
+            seen.add(variant);
+            candidates.push(variant);
+          }
+          continue;
         }
-        continue;
-      }
 
-      const candidate = joinBaseAndPath(normalizedBase, variant);
-      if (!seen.has(candidate)) {
-        seen.add(candidate);
-        candidates.push(candidate);
+        const candidate = joinBaseAndPath(baseVariant, variant);
+        if (!seen.has(candidate)) {
+          seen.add(candidate);
+          candidates.push(candidate);
+        }
       }
     }
   }
