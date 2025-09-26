@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
-import { buildCrmApiUrl } from '@/lib/api.js';
+import { submitConsultationRequest } from '@/lib/api.js';
 import { 
   Calendar, 
   Clock, 
@@ -43,6 +43,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submissionError, setSubmissionError] = useState(null);
 
   const services = [
     {
@@ -187,7 +188,8 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setSubmissionError(null);
+
     try {
       const requestData = {
         firstName: patientInfo.firstName,
@@ -204,24 +206,11 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         priority: 'normal'
       };
 
-// Submit to the CRM API
-      const response = await fetch(buildCrmApiUrl('/consultation-requests'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
-      });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Request failed: ${response.status} ${errorText}`);
-      }
-
-      const result = await response.json();
+      const submission = await submitConsultationRequest(requestData);
+      const result = submission?.data ?? submission;
 
       if (result?.success) {
-        setIsSubmitting(false);
         setIsSubmitted(true);
         return;
       }
@@ -229,9 +218,27 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       throw new Error(result?.error || 'Failed to submit consultation request');
     } catch (error) {
       console.error('Error submitting consultation request:', error);
+      if (error?.attempts) {
+        console.error('CRM submission attempts:', error.attempts);
+      }
+
+      const fallbackMessage = 'There was an error submitting your request. Please try again or call us at (484) 357-1916.';
+
+      if (error?.attempts?.length) {
+        const lastAttempt = error.attempts[error.attempts.length - 1];
+        if (lastAttempt?.status) {
+          setSubmissionError(`${fallbackMessage} (Error code ${lastAttempt.status})`);
+          return;
+        }
+        if (lastAttempt?.error?.message) {
+          setSubmissionError(`${fallbackMessage} (${lastAttempt.error.message})`);
+          return;
+        }
+      }
+
+      setSubmissionError(fallbackMessage);
+    } finally {
       setIsSubmitting(false);
-      // You might want to show an error message to the user here
-      alert('There was an error submitting your request. Please try again or call us at (484) 357-1916.');
     }
   };
 
@@ -259,6 +266,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       preferredContact: 'phone'
     });
     setIsSubmitted(false);
+    setSubmissionError(null);
   };
 
   if (!isOpen) return null;
@@ -610,6 +618,12 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
                     </div>
                   </CardContent>
                 </Card>
+
+                {submissionError && (
+                  <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {submissionError}
+                  </div>
+                )}
 
                 <div className="flex gap-4">
                   <Button
