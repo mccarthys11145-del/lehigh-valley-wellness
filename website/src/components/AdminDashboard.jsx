@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button.jsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
 import { Input } from '@/components/ui/input.jsx';
+import { fetchCrmJson } from '@/lib/api.js';
 import { 
   Calendar, 
   Clock, 
@@ -16,7 +17,6 @@ import {
   MessageSquare,
   TrendingUp,
   Search,
-  Filter,
   Eye,
   Check,
   X
@@ -38,34 +38,37 @@ const AdminDashboard = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (currentStatus = statusFilter) => {
     try {
       setLoading(true);
-      
-      // Fetch dashboard stats
-      const statsResponse = await fetch('/api/dashboard/stats');
-      const statsData = await statsResponse.json();
-      if (statsData.success) {
+
+      const today = new Date().toISOString().split('T')[0];
+
+      const [statsResult, requestsResult, appointmentsResult] = await Promise.all([
+        fetchCrmJson('/dashboard/stats'),
+        fetchCrmJson(`/consultation-requests?status=${currentStatus}`),
+        fetchCrmJson(`/appointments?start_date=${today}&end_date=${today}`)
+      ]);
+
+      const statsData = statsResult?.data ?? statsResult;
+      if (statsData?.success) {
         setStats(statsData.stats);
       }
-      
-      // Fetch consultation requests
-      const requestsResponse = await fetch(`/api/consultation-requests?status=${statusFilter}`);
-      const requestsData = await requestsResponse.json();
-      if (requestsData.success) {
+
+      const requestsData = requestsResult?.data ?? requestsResult;
+      if (requestsData?.success) {
         setConsultationRequests(requestsData.consultation_requests);
       }
-      
-      // Fetch today's appointments
-      const today = new Date().toISOString().split('T')[0];
-      const appointmentsResponse = await fetch(`/api/appointments?start_date=${today}&end_date=${today}`);
-      const appointmentsData = await appointmentsResponse.json();
-      if (appointmentsData.success) {
+
+      const appointmentsData = appointmentsResult?.data ?? appointmentsResult;
+      if (appointmentsData?.success) {
         setAppointments(appointmentsData.appointments);
       }
-      
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      if (error?.attempts) {
+        console.error('CRM fetch attempts:', error.attempts);
+      }
     } finally {
       setLoading(false);
     }
@@ -73,7 +76,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
 
   const handleConfirmRequest = async (requestId) => {
     try {
-      const response = await fetch(`/api/consultation-requests/${requestId}/confirm`, {
+      const response = await fetchCrmJson(`/consultation-requests/${requestId}/confirm`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -85,13 +88,16 @@ const AdminDashboard = ({ isOpen, onClose }) => {
           provider: 'Dr. Smith'
         })
       });
-      
-      const result = await response.json();
-      if (result.success) {
+
+      const result = response?.data ?? response;
+      if (result?.success) {
         fetchDashboardData(); // Refresh data
       }
     } catch (error) {
       console.error('Error confirming request:', error);
+      if (error?.attempts) {
+        console.error('CRM confirmation attempts:', error.attempts);
+      }
     }
   };
 
@@ -302,8 +308,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
                     <select
                       value={statusFilter}
                       onChange={(e) => {
-                        setStatusFilter(e.target.value);
-                        fetchDashboardData();
+                        const newStatus = e.target.value;
+                        setStatusFilter(newStatus);
+                        fetchDashboardData(newStatus);
                       }}
                       className="px-3 py-2 border border-gray-300 rounded-md"
                     >

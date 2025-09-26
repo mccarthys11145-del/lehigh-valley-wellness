@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button.jsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Input } from '@/components/ui/input.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
+import { submitConsultationRequest } from '@/lib/api.js';
 import { 
   Calendar, 
   Clock, 
@@ -40,6 +41,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submissionError, setSubmissionError] = useState(null);
 
   const services = [
     {
@@ -109,11 +111,13 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       for (let minute = 0; minute < 60; minute += interval) {
         const time = new Date();
         time.setHours(hour, minute, 0, 0);
-        slots.push(time.toLocaleTimeString('en-US', { 
-          hour: 'numeric', 
+        const value = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+        const label = time.toLocaleTimeString('en-US', {
+          hour: 'numeric',
           minute: '2-digit',
-          hour12: true 
-        }));
+          hour12: true
+        });
+        slots.push({ value, label });
       }
     }
     return slots;
@@ -182,9 +186,9 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setSubmissionError(null);
+
     try {
-      // Prepare data for CRM API
       const requestData = {
         firstName: patientInfo.firstName,
         lastName: patientInfo.lastName,
@@ -195,33 +199,43 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
         preferredContact: patientInfo.preferredContact,
         serviceType: selectedService.id,
         preferredDate: selectedDate.toISOString().split('T')[0],
-        preferredTime: selectedTime,
+        preferredTime: selectedTime?.value,
         reason: patientInfo.reason,
         priority: 'normal'
       };
-      
-      // Submit to CRM API
-      const response = await fetch('/api/consultation-requests', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        setIsSubmitting(false);
+
+      const submission = await submitConsultationRequest(requestData);
+      const result = submission?.data ?? submission;
+
+      if (result?.success) {
         setIsSubmitted(true);
-      } else {
-        throw new Error(result.error || 'Failed to submit consultation request');
+        return;
       }
+
+      throw new Error(result?.error || 'Failed to submit consultation request');
     } catch (error) {
       console.error('Error submitting consultation request:', error);
+      if (error?.attempts) {
+        console.error('CRM submission attempts:', error.attempts);
+      }
+
+      const fallbackMessage = 'There was an error submitting your request. Please try again or call us at (484) 357-1916.';
+
+      if (error?.attempts?.length) {
+        const lastAttempt = error.attempts[error.attempts.length - 1];
+        if (lastAttempt?.status) {
+          setSubmissionError(`${fallbackMessage} (Error code ${lastAttempt.status})`);
+          return;
+        }
+        if (lastAttempt?.error?.message) {
+          setSubmissionError(`${fallbackMessage} (${lastAttempt.error.message})`);
+          return;
+        }
+      }
+
+      setSubmissionError(fallbackMessage);
+    } finally {
       setIsSubmitting(false);
-      // You might want to show an error message to the user here
-      alert('There was an error submitting your request. Please try again or call us at (484) 357-1916.');
     }
   };
 
@@ -249,6 +263,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       preferredContact: 'phone'
     });
     setIsSubmitted(false);
+    setSubmissionError(null);
   };
 
   if (!isOpen) return null;
@@ -315,7 +330,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Time:</span>
-                    <span>{selectedTime}</span>
+                    <span>{selectedTime?.label}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Duration:</span>
@@ -460,13 +475,13 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
                   <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                     {generateTimeSlots().map((time) => (
                       <Button
-                        key={time}
-                        variant={selectedTime === time ? "default" : "outline"}
+                        key={time.value}
+                        variant={selectedTime?.value === time.value ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleTimeSelect(time)}
                         className="text-sm"
                       >
-                        {time}
+                        {time.label}
                       </Button>
                     ))}
                   </div>
@@ -500,7 +515,7 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
                     <div className="flex justify-between">
                       <span className="font-medium">Date & Time:</span>
                       <span>
-                        {selectedDate?.toLocaleDateString()} at {selectedTime}
+                        {selectedDate?.toLocaleDateString()} at {selectedTime?.label}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -600,6 +615,12 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
                     </div>
                   </CardContent>
                 </Card>
+
+                {submissionError && (
+                  <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {submissionError}
+                  </div>
+                )}
 
                 <div className="flex gap-4">
                   <Button
