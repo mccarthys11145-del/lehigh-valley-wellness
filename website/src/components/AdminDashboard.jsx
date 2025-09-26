@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button.jsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
 import { Input } from '@/components/ui/input.jsx';
+import { buildCrmApiUrl } from '@/lib/api.js';
 import { 
   Calendar, 
   Clock, 
@@ -16,7 +17,6 @@ import {
   MessageSquare,
   TrendingUp,
   Search,
-  Filter,
   Eye,
   Check,
   X
@@ -38,27 +38,27 @@ const AdminDashboard = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (currentStatus = statusFilter) => {
     try {
       setLoading(true);
-      
+
       // Fetch dashboard stats
-      const statsResponse = await fetch('/api/dashboard/stats');
+      const statsResponse = await fetch(buildCrmApiUrl('/dashboard/stats'));
       const statsData = await statsResponse.json();
       if (statsData.success) {
         setStats(statsData.stats);
       }
-      
+
       // Fetch consultation requests
-      const requestsResponse = await fetch(`/api/consultation-requests?status=${statusFilter}`);
+      const requestsResponse = await fetch(buildCrmApiUrl(`/consultation-requests?status=${currentStatus}`));
       const requestsData = await requestsResponse.json();
       if (requestsData.success) {
         setConsultationRequests(requestsData.consultation_requests);
       }
-      
+
       // Fetch today's appointments
       const today = new Date().toISOString().split('T')[0];
-      const appointmentsResponse = await fetch(`/api/appointments?start_date=${today}&end_date=${today}`);
+      const appointmentsResponse = await fetch(buildCrmApiUrl(`/appointments?start_date=${today}&end_date=${today}`));
       const appointmentsData = await appointmentsResponse.json();
       if (appointmentsData.success) {
         setAppointments(appointmentsData.appointments);
@@ -73,7 +73,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
 
   const handleConfirmRequest = async (requestId) => {
     try {
-      const response = await fetch(`/api/consultation-requests/${requestId}/confirm`, {
+      const response = await fetch(buildCrmApiUrl(`/consultation-requests/${requestId}/confirm`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -302,8 +302,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
                     <select
                       value={statusFilter}
                       onChange={(e) => {
-                        setStatusFilter(e.target.value);
-                        fetchDashboardData();
+                        const newStatus = e.target.value;
+                        setStatusFilter(newStatus);
+                        fetchDashboardData(newStatus);
                       }}
                       className="px-3 py-2 border border-gray-300 rounded-md"
                     >
