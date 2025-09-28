@@ -15,7 +15,6 @@ import {
   ArrowLeft,
   ArrowRight,
   CalendarDays,
-  Stethoscope,
   Brain,
   Heart,
   Zap,
@@ -81,15 +80,6 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       icon: <Activity className="w-6 h-6 text-purple-600" />,
       description: 'Evaluation for peptide therapy protocols',
       preparation: 'Health history review and goal assessment'
-    },
-    {
-      id: 'iv-therapy',
-      name: 'IV Therapy Session',
-      duration: '90 minutes',
-      price: '$125',
-      icon: <Stethoscope className="w-6 h-6 text-teal-600" />,
-      description: 'Intravenous nutrient therapy treatment',
-      preparation: 'Please eat a light meal before your appointment'
     },
     {
       id: 'wellness',

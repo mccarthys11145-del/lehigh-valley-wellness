@@ -80,7 +80,6 @@ class EmailService:
             'hormone': 'Hormone Optimization Consultation',
             'weight-loss': 'Medical Weight Loss Consultation',
             'peptide': 'Peptide Therapy Consultation',
-            'iv-therapy': 'IV Therapy Session',
             'wellness': 'Wellness Consultation'
         }
         
@@ -141,7 +140,7 @@ class EmailService:
             </div>
             
             <div class="footer">
-                <p>Lehigh Valley Wellness | Lehigh Valley, PA | {variables['practice_phone']}</p>
+                <p>Lehigh Valley Wellness | 6081 Hamilton Blvd Suite 600, Allentown, PA 18106 | {variables['practice_phone']}</p>
                 <p>This email was sent to {patient.email}</p>
             </div>
         </body>
@@ -173,36 +172,32 @@ class EmailService:
             'hormone': '$200',
             'weight-loss': '$175',
             'peptide': '$150',
-            'iv-therapy': '$125',
             'wellness': '$200'
         }
-        
+
         # Service duration mapping
         service_duration = {
             'psychiatry': '60 minutes',
             'hormone': '45 minutes',
             'weight-loss': '45 minutes',
             'peptide': '30 minutes',
-            'iv-therapy': '90 minutes',
             'wellness': '60 minutes'
         }
-        
+
         # Service preparation instructions
         service_prep = {
             'psychiatry': 'Please complete intake forms 24 hours before your appointment',
             'hormone': 'Fasting lab work may be required before your visit',
             'weight-loss': 'Please bring current medications and recent lab results',
             'peptide': 'Health history review and goal assessment',
-            'iv-therapy': 'Please eat a light meal before your appointment',
             'wellness': 'Complete health questionnaire and bring recent lab work'
         }
-        
+
         service_display = {
             'psychiatry': 'Psychiatry & Mental Health',
             'hormone': 'Hormone Optimization Consultation',
             'weight-loss': 'Medical Weight Loss Consultation',
             'peptide': 'Peptide Therapy Consultation',
-            'iv-therapy': 'IV Therapy Session',
             'wellness': 'Wellness Consultation'
         }
         
@@ -215,7 +210,7 @@ class EmailService:
             'service_price': service_pricing.get(appointment.service_type, 'Please call for pricing'),
             'preparation_instructions': service_prep.get(appointment.service_type, 'No special preparation required'),
             'practice_phone': '(484) 357-1916',
-            'practice_address': 'Lehigh Valley, PA'
+            'practice_address': '6081 Hamilton Blvd Suite 600, Allentown, PA 18106'
         }
         
         html_content = f"""
@@ -307,7 +302,6 @@ class EmailService:
             'hormone': 'Hormone Optimization Consultation',
             'weight-loss': 'Medical Weight Loss Consultation',
             'peptide': 'Peptide Therapy Consultation',
-            'iv-therapy': 'IV Therapy Session',
             'wellness': 'Wellness Consultation'
         }
         
@@ -371,7 +365,7 @@ class EmailService:
             </div>
             
             <div class="footer">
-                <p>Lehigh Valley Wellness | Lehigh Valley, PA | {variables['practice_phone']}</p>
+                <p>Lehigh Valley Wellness | 6081 Hamilton Blvd Suite 600, Allentown, PA 18106 | {variables['practice_phone']}</p>
                 <p>This email was sent to {patient.email}</p>
             </div>
         </body>

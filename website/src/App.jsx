@@ -70,14 +70,24 @@ function App() {
     {
       icon: <Brain className="w-8 h-8 text-blue-600" />,
       title: "Psychiatry & Mental Health",
-      description: "Comprehensive mental health care including therapy, counseling, and psychiatric evaluations without controlled substances.",
-      features: ["Individual Therapy", "Cognitive Behavioral Therapy", "Anxiety & Depression Treatment", "Telehealth Available"]
+      description: "Comprehensive mental health care including counseling and psychiatric evaluations without controlled substances.",
+      features: [
+        "Mental Health Evaluations",
+        "Anxiety & Depression Treatment",
+        "Telehealth Available",
+        "Holistic Care Plans"
+      ]
     },
     {
       icon: <Zap className="w-8 h-8 text-green-600" />,
       title: "Hormone Optimization",
       description: "Advanced hormone replacement therapy and optimization for both men and women using safe, effective protocols.",
-      features: ["Testosterone Therapy", "Bio-Identical Hormones", "Comprehensive Testing", "Ongoing Monitoring"]
+      features: [
+        "Personalized Hormone Plans",
+        "Bio-Identical Hormones",
+        "Comprehensive Testing",
+        "Ongoing Monitoring"
+      ]
     },
     {
       icon: <Heart className="w-8 h-8 text-red-600" />,
@@ -90,12 +100,6 @@ function App() {
       title: "Peptide Therapy",
       description: "FDA-approved peptide treatments for anti-aging, recovery, and wellness optimization.",
       features: ["Anti-Aging Peptides", "Recovery Enhancement", "Immune Support", "Performance Optimization"]
-    },
-    {
-      icon: <Stethoscope className="w-8 h-8 text-teal-600" />,
-      title: "IV Therapy",
-      description: "Intravenous nutrient therapy for energy, immunity, and overall wellness enhancement.",
-      features: ["Energy Boost", "Immune Support", "Athletic Recovery", "Hangover Relief"]
     },
     {
       icon: <Shield className="w-8 h-8 text-orange-600" />,
@@ -455,7 +459,7 @@ function App() {
                   <MapPin className="w-6 h-6 text-blue-300 mr-4" />
                   <div>
                     <p className="font-semibold">Location</p>
-                    <p className="text-blue-100">Lehigh Valley, PA</p>
+                    <p className="text-blue-100">6081 Hamilton Blvd Suite 600, Allentown, PA 18106</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -487,13 +491,12 @@ function App() {
                     <Input placeholder="Phone" type="tel" />
                     <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                       <option value="">Select Service Interest</option>
-                      <option value="hormone">Hormone Optimization</option>
-                      <option value="weight-loss">Medical Weight Loss</option>
-                      <option value="psychiatry">Psychiatry & Mental Health</option>
-                      <option value="peptide">Peptide Therapy</option>
-                      <option value="iv">IV Therapy</option>
-                      <option value="wellness">Wellness Consultation</option>
-                    </select>
+                    <option value="hormone">Hormone Optimization</option>
+                    <option value="weight-loss">Medical Weight Loss</option>
+                    <option value="psychiatry">Psychiatry & Mental Health</option>
+                    <option value="peptide">Peptide Therapy</option>
+                    <option value="wellness">Wellness Consultation</option>
+                  </select>
                     <Textarea placeholder="Tell us about your health goals..." rows={4} />
                     <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setIsSchedulerOpen(true)}>
                       Request Consultation
@@ -528,7 +531,6 @@ function App() {
                 <li>Medical Weight Loss</li>
                 <li>Psychiatry & Mental Health</li>
                 <li>Peptide Therapy</li>
-                <li>IV Therapy</li>
                 <li>Wellness Consultations</li>
               </ul>
             </div>
@@ -546,7 +548,7 @@ function App() {
               <ul className="space-y-2 text-gray-400">
                 <li>(484) 357-1916</li>
                 <li>info@lehighvalleywellness.org</li>
-                <li>Lehigh Valley, PA</li>
+                <li>6081 Hamilton Blvd Suite 600, Allentown, PA 18106</li>
               </ul>
             </div>
           </div>
