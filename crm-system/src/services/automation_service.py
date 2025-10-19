@@ -172,7 +172,6 @@ class AutomationService:
             'hormone': 'Hormone Optimization Consultation',
             'weight-loss': 'Medical Weight Loss Consultation',
             'peptide': 'Peptide Therapy Consultation',
-            'iv-therapy': 'IV Therapy Session',
             'wellness': 'Wellness Consultation'
         }
         
@@ -182,7 +181,6 @@ class AutomationService:
             'hormone': 'Follow the hormone optimization protocol as outlined. Schedule follow-up lab work in 6-8 weeks.',
             'weight-loss': 'Begin your personalized nutrition plan and track your progress. Weigh yourself weekly at the same time.',
             'peptide': 'Start your peptide therapy regimen as instructed. Monitor for any side effects and benefits.',
-            'iv-therapy': 'Stay hydrated and maintain a healthy diet to maximize the benefits of your IV therapy.',
             'wellness': 'Implement the wellness recommendations discussed. Focus on sleep, nutrition, and stress management.'
         }
         
@@ -232,7 +230,7 @@ class AutomationService:
             </div>
             
             <div class="footer">
-                <p>Lehigh Valley Wellness | Lehigh Valley, PA | (484) 357-1916</p>
+                <p>Lehigh Valley Wellness | 6081 Hamilton Blvd Suite 600, Allentown, PA 18106 | (484) 357-1916</p>
                 <p>This email was sent to {patient.email}</p>
             </div>
         </body>
@@ -263,7 +261,6 @@ class AutomationService:
             'hormone': 'Hormone Optimization Consultation',
             'weight-loss': 'Medical Weight Loss Consultation',
             'peptide': 'Peptide Therapy Consultation',
-            'iv-therapy': 'IV Therapy Session',
             'wellness': 'Wellness Consultation'
         }
         
@@ -273,7 +270,6 @@ class AutomationService:
             'hormone': 'You should start noticing initial improvements in energy and mood. Continue with your hormone protocol and prepare for follow-up testing.',
             'weight-loss': 'Focus on consistent meal timing and portion control. Track your food intake and celebrate small victories along the way.',
             'peptide': 'Monitor your response to peptide therapy. Note any improvements in recovery, energy, or other targeted areas.',
-            'iv-therapy': 'Maintain proper hydration and nutrition to extend the benefits of your IV therapy session.',
             'wellness': 'Implement the lifestyle changes gradually. Focus on one area at a time for sustainable results.'
         }
         
@@ -324,7 +320,7 @@ class AutomationService:
             </div>
             
             <div class="footer">
-                <p>Lehigh Valley Wellness | Lehigh Valley, PA | (484) 357-1916</p>
+                <p>Lehigh Valley Wellness | 6081 Hamilton Blvd Suite 600, Allentown, PA 18106 | (484) 357-1916</p>
                 <p>This email was sent to {patient.email}</p>
             </div>
         </body>
@@ -399,7 +395,7 @@ class AutomationService:
             </div>
             
             <div class="footer">
-                <p>Lehigh Valley Wellness | Lehigh Valley, PA | (484) 357-1916</p>
+                <p>Lehigh Valley Wellness | 6081 Hamilton Blvd Suite 600, Allentown, PA 18106 | (484) 357-1916</p>
                 <p>This email was sent to {patient.email}</p>
             </div>
         </body>
@@ -477,7 +473,7 @@ class AutomationService:
             </div>
             
             <div class="footer">
-                <p>Lehigh Valley Wellness | Lehigh Valley, PA | (484) 357-1916</p>
+                <p>Lehigh Valley Wellness | 6081 Hamilton Blvd Suite 600, Allentown, PA 18106 | (484) 357-1916</p>
                 <p>This email was sent to {patient.email}</p>
             </div>
         </body>
