@@ -73,12 +73,6 @@ class AIReceptionistService:
                 'price': 150,
                 'description': 'FDA-approved peptide treatments for anti-aging and wellness'
             },
-            'iv_therapy': {
-                'name': 'IV Therapy',
-                'duration': 90,
-                'price': 125,
-                'description': 'Intravenous nutrient therapy for energy and wellness'
-            },
             'wellness_consultation': {
                 'name': 'Wellness Consultation',
                 'duration': 60,
@@ -86,12 +80,12 @@ class AIReceptionistService:
                 'description': 'Comprehensive wellness assessments and optimization plans'
             }
         }
-        
+
         # Practice information
         self.practice_info = {
             'name': 'Lehigh Valley Wellness',
             'phone': '(484) 357-1916',
-            'address': 'Lehigh Valley, PA',
+            'address': '6081 Hamilton Blvd Suite 600, Allentown, PA 18106',
             'hours': 'Monday-Friday: 8:00 AM - 6:00 PM',
             'website': 'lehighvalleywellness.org'
         }
@@ -220,9 +214,9 @@ class AIReceptionistService:
         
         # Generate context-aware response using AI
         try:
-            system_prompt = f"""You are a professional AI receptionist for {self.practice_info['name']}, 
-            a wellness practice offering hormone optimization, medical weight loss, psychiatry, 
-            peptide therapy, IV therapy, and wellness consultations.
+            system_prompt = f"""You are a professional AI receptionist for {self.practice_info['name']},
+            a wellness practice offering hormone optimization, medical weight loss, psychiatry,
+            peptide therapy, and wellness consultations.
             
             Practice Information:
             - Phone: {self.practice_info['phone']}
@@ -280,9 +274,9 @@ class AIReceptionistService:
     def _get_fallback_response(self, intent: str) -> str:
         """Provide fallback responses when AI generation fails."""
         fallback_responses = {
-            'appointment_scheduling': f"""I'd be happy to help you schedule an appointment. 
-            We offer consultations for hormone optimization, medical weight loss, psychiatry, 
-            peptide therapy, IV therapy, and wellness consultations. 
+            'appointment_scheduling': f"""I'd be happy to help you schedule an appointment.
+            We offer consultations for hormone optimization, medical weight loss, psychiatry,
+            peptide therapy, and wellness consultations.
             
             What type of service are you interested in, and do you have a preferred date and time?
             
@@ -290,10 +284,9 @@ class AIReceptionistService:
             
             'service_inquiry': f"""We offer several wellness services including:
             - Hormone Optimization ($200, 45 min)
-            - Medical Weight Loss ($175, 45 min) 
+            - Medical Weight Loss ($175, 45 min)
             - Psychiatry & Mental Health ($250, 60 min)
             - Peptide Therapy ($150, 30 min)
-            - IV Therapy ($125, 90 min)
             - Wellness Consultations ($200, 60 min)
             
             Which service would you like to know more about?""",

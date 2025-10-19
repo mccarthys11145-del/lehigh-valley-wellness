@@ -84,28 +84,28 @@ const ChatWidget = ({ isOpen, onClose }) => {
       case 'appointment_scheduling':
         return {
           intent: 'appointment_scheduling',
-          message: "I'd be happy to help you request an appointment! We offer several services:\n\n• Psychiatry & Mental Health (60 min - $250)\n• Hormone Optimization (45 min - $200)\n• Medical Weight Loss (45 min - $175)\n• Peptide Therapy (30 min - $150)\n• IV Therapy (90 min - $125)\n• Wellness Consultation (60 min - $200)\n\nWhich service interests you? You can also use the 'Request Consultation' button on our website to schedule directly.",
+          message: "I'd be happy to help you request an appointment! We offer several services:\n\n• Psychiatry & Mental Health (60 min - $250)\n• Hormone Optimization (45 min - $200)\n• Medical Weight Loss (45 min - $175)\n• Peptide Therapy (30 min - $150)\n• Wellness Consultation (60 min - $200)\n\nWhich service interests you? You can also use the 'Request Consultation' button on our website to schedule directly.",
           actions: ['show_appointment_form']
         };
 
       case 'service_information':
         return {
           intent: 'service_information',
-          message: "We offer comprehensive wellness services at Lehigh Valley Wellness:\n\n🧠 **Psychiatry & Mental Health** - Comprehensive mental health care including therapy and counseling (without controlled substances)\n\n💪 **Hormone Optimization** - Advanced hormone replacement therapy for both men and women using safe, effective protocols\n\n⚖️ **Medical Weight Loss** - Physician-supervised weight loss programs with personalized nutrition coaching\n\n🧬 **Peptide Therapy** - FDA-approved peptide treatments for anti-aging, recovery, and wellness optimization\n\n💧 **IV Therapy** - Intravenous nutrient therapy for energy, immunity, and overall wellness enhancement\n\n🌟 **Wellness Consultation** - Comprehensive wellness assessments and personalized optimization plans\n\nWould you like more details about any specific service?",
+          message: "We offer comprehensive wellness services at Lehigh Valley Wellness:\n\n🧠 **Psychiatry & Mental Health** - Comprehensive mental health care including therapy and counseling (without controlled substances)\n\n💪 **Hormone Optimization** - Advanced hormone replacement therapy for both men and women using safe, effective protocols\n\n⚖️ **Medical Weight Loss** - Physician-supervised weight loss programs with personalized nutrition coaching\n\n🧬 **Peptide Therapy** - FDA-approved peptide treatments for anti-aging, recovery, and wellness optimization\n\n🌟 **Wellness Consultation** - Comprehensive wellness assessments and personalized optimization plans\n\nWould you like more details about any specific service?",
           actions: ['show_services']
         };
 
       case 'hours_location':
         return {
           intent: 'hours_location',
-          message: "**Lehigh Valley Wellness**\n📍 Located in the Lehigh Valley, PA area\n📞 Phone: (484) 357-1916\n🌐 Website: lehighvalleywellness.org\n\n**Hours:**\nMonday - Friday: 8:00 AM - 6:00 PM\nWeekends: Closed\n\n**Parking:** Free parking available on-site\n**Accessibility:** Wheelchair accessible facility\n\nIs there anything specific about our location or hours you'd like to know?",
+          message: "**Lehigh Valley Wellness**\n📍 6081 Hamilton Blvd Suite 600, Allentown, PA 18106\n📞 Phone: (484) 357-1916\n🌐 Website: lehighvalleywellness.org\n\n**Hours:**\nMonday - Friday: 8:00 AM - 6:00 PM\nWeekends: Closed\n\n**Parking:** Free parking available on-site\n**Accessibility:** Wheelchair accessible facility\n\nIs there anything specific about our location or hours you'd like to know?",
           actions: ['show_contact']
         };
 
       case 'insurance_payment':
         return {
           intent: 'insurance_payment',
-          message: "We accept several insurance plans including:\n• Blue Cross Blue Shield\n• Aetna\n• Cigna\n• United Healthcare\n\n**Note:** Some services like Hormone Optimization, Peptide Therapy, and IV Therapy are typically not covered by insurance and require direct payment.\n\nFor specific insurance verification and payment options, please call us at (484) 357-1916 or mention your insurance during your consultation request.",
+          message: "We accept several insurance plans including:\n• Blue Cross Blue Shield\n• Aetna\n• Cigna\n• United Healthcare\n\n**Note:** Some services like Hormone Optimization and Peptide Therapy are typically not covered by insurance and require direct payment.\n\nFor specific insurance verification and payment options, please call us at (484) 357-1916 or mention your insurance during your consultation request.",
           actions: ['show_insurance']
         };
 
@@ -127,7 +127,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
 
   const detectIntent = (message) => {
     const appointmentKeywords = ['appointment', 'schedule', 'book', 'consultation', 'visit', 'see doctor', 'meet'];
-    const serviceKeywords = ['service', 'treatment', 'therapy', 'hormone', 'weight loss', 'peptide', 'iv therapy', 'psychiatry', 'wellness'];
+    const serviceKeywords = ['service', 'treatment', 'therapy', 'hormone', 'weight loss', 'peptide', 'psychiatry', 'wellness'];
     const hoursKeywords = ['hours', 'open', 'closed', 'location', 'address', 'where', 'when', 'time'];
     const insuranceKeywords = ['insurance', 'cost', 'price', 'payment', 'covered', 'accept', 'billing'];
     const greetingKeywords = ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening'];

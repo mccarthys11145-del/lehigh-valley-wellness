@@ -15,7 +15,6 @@ import {
   ArrowLeft,
   ArrowRight,
   CalendarDays,
-  Stethoscope,
   Brain,
   Heart,
   Zap,
@@ -23,7 +22,9 @@ import {
   Shield
 } from 'lucide-react';
 
-const API_BASE_URL = import.meta.env.VITE_CRM_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL =
+  import.meta.env.VITE_CRM_API_URL ||
+  'https://5000-iysi7oxkf86lree03ye7v-51054291.manusvm.computer/api';
 
 const AppointmentScheduler = ({ isOpen, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -81,15 +82,6 @@ const AppointmentScheduler = ({ isOpen, onClose }) => {
       icon: <Activity className="w-6 h-6 text-purple-600" />,
       description: 'Evaluation for peptide therapy protocols',
       preparation: 'Health history review and goal assessment'
-    },
-    {
-      id: 'iv-therapy',
-      name: 'IV Therapy Session',
-      duration: '90 minutes',
-      price: '$125',
-      icon: <Stethoscope className="w-6 h-6 text-teal-600" />,
-      description: 'Intravenous nutrient therapy treatment',
-      preparation: 'Please eat a light meal before your appointment'
     },
     {
       id: 'wellness',
