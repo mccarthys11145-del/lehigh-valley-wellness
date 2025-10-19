@@ -5,13 +5,11 @@ import { Badge } from '@/components/ui/badge.jsx';
 import { Input } from '@/components/ui/input.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import AppointmentScheduler from './components/AppointmentScheduler.jsx';
-import AdminDashboard from './components/AdminDashboard.jsx';
-import AdminLogin from './components/AdminLogin.jsx';
 import ChatWidget from './components/ChatWidget.jsx';
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
+import {
+  Phone,
+  Mail,
+  MapPin,
   Clock, 
   Star, 
   Heart, 
@@ -26,8 +24,7 @@ import {
   Activity,
   Award,
   Menu,
-  X,
-  Settings
+  X
 } from 'lucide-react';
 import './App.css';
 
@@ -35,9 +32,6 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
@@ -176,21 +170,6 @@ function App() {
                     {section.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                   </button>
                 ))}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    if (isAdminAuthenticated) {
-                      setIsAdminOpen(true);
-                    } else {
-                      setShowAdminLogin(true);
-                    }
-                  }}
-                  className="text-gray-600 hover:text-blue-600"
-                >
-                  <Settings className="w-4 h-4 mr-1" />
-                  Admin
-                </Button>
               </div>
             </div>
 
@@ -219,20 +198,6 @@ function App() {
                   {item}
                 </button>
               ))}
-              <button
-                onClick={() => {
-                  if (isAdminAuthenticated) {
-                    setIsAdminOpen(true);
-                  } else {
-                    setShowAdminLogin(true);
-                  }
-                  setIsMenuOpen(false);
-                }}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 w-full text-left"
-              >
-                <Settings className="w-4 h-4 mr-2 inline" />
-                Admin
-              </button>
             </div>
           </div>
         )}
@@ -562,23 +527,6 @@ function App() {
       <AppointmentScheduler 
         isOpen={isSchedulerOpen} 
         onClose={() => setIsSchedulerOpen(false)} 
-      />
-
-      {/* Admin Login Modal */}
-      <AdminLogin 
-        isOpen={showAdminLogin} 
-        onClose={() => setShowAdminLogin(false)}
-        onLogin={() => setIsAdminAuthenticated(true)}
-      />
-
-      {/* Admin Dashboard Modal */}
-      <AdminDashboard 
-        isOpen={isAdminOpen} 
-        onClose={() => {
-          setIsAdminOpen(false);
-          // Optional: logout when closing dashboard
-          // setIsAdminAuthenticated(false);
-        }} 
       />
 
       {/* Chat Widget */}
