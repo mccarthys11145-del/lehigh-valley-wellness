@@ -22,7 +22,9 @@ import {
   Shield
 } from 'lucide-react';
 
-const API_BASE_URL = import.meta.env.VITE_CRM_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL =
+  import.meta.env.VITE_CRM_API_URL ||
+  'https://5000-iysi7oxkf86lree03ye7v-51054291.manusvm.computer/api';
 
 const AppointmentScheduler = ({ isOpen, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);

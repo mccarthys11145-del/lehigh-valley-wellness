@@ -1,6 +1,7 @@
 const RELATIVE_DEFAULT = '/api';
 const LOCAL_DEFAULT = 'http://localhost:5001/api';
-const PROD_DEFAULT = 'https://zmhqivc5kk7d.manus.space/api';
+const PROD_DEFAULT =
+  'https://5000-iysi7oxkf86lree03ye7v-51054291.manusvm.computer/api';
 
 const isBrowser = typeof window !== 'undefined';
 const hasDocument = typeof document !== 'undefined';

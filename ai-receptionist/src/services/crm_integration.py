@@ -17,7 +17,10 @@ class CRMIntegrationService:
     
     def __init__(self, crm_base_url: str = None):
         # In production, this would be the actual CRM API URL
-        self.crm_base_url = crm_base_url or "https://xlhyimcd9gnm.manus.space/api"
+        self.crm_base_url = (
+            crm_base_url
+            or "https://5000-iysi7oxkf86lree03ye7v-51054291.manusvm.computer/api"
+        )
         self.api_timeout = 30
         
         # API endpoints
