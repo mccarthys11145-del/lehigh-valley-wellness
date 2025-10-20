@@ -17,7 +17,10 @@ class CRMIntegrationService:
     
     def __init__(self, crm_base_url: str = None):
         # In production, this would be the actual CRM API URL
-        self.crm_base_url = crm_base_url or "https://xlhyimcd9gnm.manus.space/api"
+        self.crm_base_url = (
+            crm_base_url
+            or "https://5000-iysi7oxkf86lree03ye7v-51054291.manusvm.computer/api"
+        )
         self.api_timeout = 30
         
         # API endpoints
@@ -35,7 +38,6 @@ class CRMIntegrationService:
             'hormone_optimization': 'Hormone Optimization Consultation',
             'weight_loss': 'Medical Weight Loss Consultation',
             'peptide_therapy': 'Peptide Therapy Consultation',
-            'iv_therapy': 'IV Therapy Session',
             'wellness_consultation': 'Wellness Consultation'
         }
         
@@ -325,14 +327,6 @@ class CRMIntegrationService:
                     'preparation': 'No special preparation required. Bring list of current medications.',
                     'insurance_accepted': False
                 },
-                'iv_therapy': {
-                    'name': 'IV Therapy',
-                    'duration': 90,
-                    'price': 125,
-                    'description': 'Intravenous nutrient therapy for energy, immunity, and overall wellness enhancement.',
-                    'preparation': 'Eat a light meal before treatment. Bring entertainment for 90-minute session.',
-                    'insurance_accepted': False
-                },
                 'wellness_consultation': {
                     'name': 'Wellness Consultation',
                     'duration': 60,
@@ -417,7 +411,7 @@ class CRMIntegrationService:
         return {
             'name': 'Lehigh Valley Wellness',
             'phone': '(484) 357-1916',
-            'address': 'Lehigh Valley, PA',
+            'address': '6081 Hamilton Blvd Suite 600, Allentown, PA 18106',
             'hours': 'Monday-Friday: 8:00 AM - 6:00 PM',
             'website': 'lehighvalleywellness.org',
             'email': 'info@lehighvalleywellness.org',

@@ -5,13 +5,12 @@ import { Badge } from '@/components/ui/badge.jsx';
 import { Input } from '@/components/ui/input.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import AppointmentScheduler from './components/AppointmentScheduler.jsx';
-import AdminDashboard from './components/AdminDashboard.jsx';
-import AdminLogin from './components/AdminLogin.jsx';
 import ChatWidget from './components/ChatWidget.jsx';
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
+import logo from '@/assets/lehigh-valley-wellness-logo.svg';
+import {
+  Phone,
+  Mail,
+  MapPin,
   Clock, 
   Star, 
   Heart, 
@@ -26,8 +25,7 @@ import {
   Activity,
   Award,
   Menu,
-  X,
-  Settings
+  X
 } from 'lucide-react';
 import './App.css';
 
@@ -35,9 +33,6 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
@@ -70,14 +65,24 @@ function App() {
     {
       icon: <Brain className="w-8 h-8 text-blue-600" />,
       title: "Psychiatry & Mental Health",
-      description: "Comprehensive mental health care including therapy, counseling, and psychiatric evaluations without controlled substances.",
-      features: ["Individual Therapy", "Cognitive Behavioral Therapy", "Anxiety & Depression Treatment", "Telehealth Available"]
+      description: "Comprehensive mental health care including counseling and psychiatric evaluations without controlled substances.",
+      features: [
+        "Mental Health Evaluations",
+        "Anxiety & Depression Treatment",
+        "Telehealth Available",
+        "Holistic Care Plans"
+      ]
     },
     {
       icon: <Zap className="w-8 h-8 text-green-600" />,
       title: "Hormone Optimization",
       description: "Advanced hormone replacement therapy and optimization for both men and women using safe, effective protocols.",
-      features: ["Testosterone Therapy", "Bio-Identical Hormones", "Comprehensive Testing", "Ongoing Monitoring"]
+      features: [
+        "Personalized Hormone Plans",
+        "Bio-Identical Hormones",
+        "Comprehensive Testing",
+        "Ongoing Monitoring"
+      ]
     },
     {
       icon: <Heart className="w-8 h-8 text-red-600" />,
@@ -90,12 +95,6 @@ function App() {
       title: "Peptide Therapy",
       description: "FDA-approved peptide treatments for anti-aging, recovery, and wellness optimization.",
       features: ["Anti-Aging Peptides", "Recovery Enhancement", "Immune Support", "Performance Optimization"]
-    },
-    {
-      icon: <Stethoscope className="w-8 h-8 text-teal-600" />,
-      title: "IV Therapy",
-      description: "Intravenous nutrient therapy for energy, immunity, and overall wellness enhancement.",
-      features: ["Energy Boost", "Immune Support", "Athletic Recovery", "Hangover Relief"]
     },
     {
       icon: <Shield className="w-8 h-8 text-orange-600" />,
@@ -153,9 +152,18 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-blue-600">Lehigh Valley Wellness</h1>
-              </div>
+              <button
+                type="button"
+                onClick={() => scrollToSection('home')}
+                className="flex items-center space-x-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded-md"
+                aria-label="Back to top"
+              >
+                <img src={logo} alt="Lehigh Valley Wellness logo" className="h-10 w-auto" />
+                <div className="hidden sm:flex flex-col leading-tight text-left">
+                  <span className="text-sm font-semibold text-blue-600 tracking-wide uppercase">Lehigh Valley</span>
+                  <span className="text-sm font-medium text-slate-600">Wellness Center</span>
+                </div>
+              </button>
             </div>
             
             {/* Desktop Navigation */}
@@ -172,21 +180,6 @@ function App() {
                     {section.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                   </button>
                 ))}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    if (isAdminAuthenticated) {
-                      setIsAdminOpen(true);
-                    } else {
-                      setShowAdminLogin(true);
-                    }
-                  }}
-                  className="text-gray-600 hover:text-blue-600"
-                >
-                  <Settings className="w-4 h-4 mr-1" />
-                  Admin
-                </Button>
               </div>
             </div>
 
@@ -215,20 +208,6 @@ function App() {
                   {item}
                 </button>
               ))}
-              <button
-                onClick={() => {
-                  if (isAdminAuthenticated) {
-                    setIsAdminOpen(true);
-                  } else {
-                    setShowAdminLogin(true);
-                  }
-                  setIsMenuOpen(false);
-                }}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 w-full text-left"
-              >
-                <Settings className="w-4 h-4 mr-2 inline" />
-                Admin
-              </button>
             </div>
           </div>
         )}
@@ -238,6 +217,7 @@ function App() {
       <section id="home" className="pt-16 bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
+            <img src={logo} alt="Lehigh Valley Wellness" className="mx-auto mb-8 h-28 w-auto drop-shadow-lg" />
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
               Optimize Your Health,
               <span className="text-blue-600"> Transform Your Life</span>
@@ -455,7 +435,7 @@ function App() {
                   <MapPin className="w-6 h-6 text-blue-300 mr-4" />
                   <div>
                     <p className="font-semibold">Location</p>
-                    <p className="text-blue-100">Lehigh Valley, PA</p>
+                    <p className="text-blue-100">6081 Hamilton Blvd Suite 600, Allentown, PA 18106</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -487,13 +467,12 @@ function App() {
                     <Input placeholder="Phone" type="tel" />
                     <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                       <option value="">Select Service Interest</option>
-                      <option value="hormone">Hormone Optimization</option>
-                      <option value="weight-loss">Medical Weight Loss</option>
-                      <option value="psychiatry">Psychiatry & Mental Health</option>
-                      <option value="peptide">Peptide Therapy</option>
-                      <option value="iv">IV Therapy</option>
-                      <option value="wellness">Wellness Consultation</option>
-                    </select>
+                    <option value="hormone">Hormone Optimization</option>
+                    <option value="weight-loss">Medical Weight Loss</option>
+                    <option value="psychiatry">Psychiatry & Mental Health</option>
+                    <option value="peptide">Peptide Therapy</option>
+                    <option value="wellness">Wellness Consultation</option>
+                  </select>
                     <Textarea placeholder="Tell us about your health goals..." rows={4} />
                     <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setIsSchedulerOpen(true)}>
                       Request Consultation
@@ -512,6 +491,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
+              <img src={logo} alt="Lehigh Valley Wellness" className="h-16 w-auto mb-4" />
               <h3 className="text-xl font-bold mb-4">Lehigh Valley Wellness</h3>
               <p className="text-gray-400 mb-4">
                 Your premier destination for comprehensive wellness and optimization medicine.
@@ -528,7 +508,6 @@ function App() {
                 <li>Medical Weight Loss</li>
                 <li>Psychiatry & Mental Health</li>
                 <li>Peptide Therapy</li>
-                <li>IV Therapy</li>
                 <li>Wellness Consultations</li>
               </ul>
             </div>
@@ -546,7 +525,7 @@ function App() {
               <ul className="space-y-2 text-gray-400">
                 <li>(484) 357-1916</li>
                 <li>info@lehighvalleywellness.org</li>
-                <li>Lehigh Valley, PA</li>
+                <li>6081 Hamilton Blvd Suite 600, Allentown, PA 18106</li>
               </ul>
             </div>
           </div>
@@ -560,23 +539,6 @@ function App() {
       <AppointmentScheduler 
         isOpen={isSchedulerOpen} 
         onClose={() => setIsSchedulerOpen(false)} 
-      />
-
-      {/* Admin Login Modal */}
-      <AdminLogin 
-        isOpen={showAdminLogin} 
-        onClose={() => setShowAdminLogin(false)}
-        onLogin={() => setIsAdminAuthenticated(true)}
-      />
-
-      {/* Admin Dashboard Modal */}
-      <AdminDashboard 
-        isOpen={isAdminOpen} 
-        onClose={() => {
-          setIsAdminOpen(false);
-          // Optional: logout when closing dashboard
-          // setIsAdminAuthenticated(false);
-        }} 
       />
 
       {/* Chat Widget */}
