@@ -214,7 +214,7 @@ function App() {
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="pt-16 bg-gradient-to-br from-blue-50 to-indigo-100">
+      <section id="home" className="pt-24 bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
             <img src={logo} alt="Lehigh Valley Wellness" className="mx-auto mb-8 h-28 w-auto drop-shadow-lg" />
@@ -564,4 +564,3 @@ function App() {
 }
 
 export default App;
-
